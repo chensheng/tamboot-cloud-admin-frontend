@@ -1,0 +1,87 @@
+@import '~antd/lib/style/themes/default.less';
+@import '~@/utils/utils.less';
+
+:global {
+    .custom-danger-button {
+        background-color: #f5222d !important;
+        color: white !important;
+        border-color: #f5222d !important;
+    }
+      
+    .custom-danger-button:hover {
+        opacity: 0.8 !important;
+    }
+}
+
+.tableList {
+    .tableListOperator {
+        margin-bottom: 16px;
+        button {
+            margin-right: 8px;
+        }
+    }
+}
+
+.hidden {
+    :global {
+        .ant-row {
+            display: none !important;
+        }
+    }
+}
+
+.shown {
+    :global {
+        .ant-row {
+            display: block !important;
+        }
+    }
+}
+  
+.tableListForm {
+    :global {
+        .ant-form-item {
+            display: flex;
+            margin-right: 0;
+            margin-bottom: 24px;
+            .ant-form-item-label {
+                width: auto;
+                padding-right: 8px;
+                line-height: 32px;
+            }
+            .ant-form-item-control {
+                line-height: 32px;
+            }
+        }
+        .ant-form-item-control-wrapper {
+            flex: 1;
+        }
+    }
+    .submitButtons {
+        display: block;
+        margin-bottom: 24px;
+        white-space: nowrap;
+    }
+}  
+
+.imgPreviewModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(red, green, blue, 0.9) !important;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 30px;
+    overflow-y: scroll;
+  
+    :global {
+      button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+    }
+}
