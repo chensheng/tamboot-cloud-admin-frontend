@@ -1,5 +1,5 @@
 import { effectsWithCallback } from '@/utils/ModelTemplate';
-import { details, updatePassword } from '@/services/systemApp/commonUser';
+import { details, refreshToken, updatePassword } from '@/services/systemApp/commonUser';
 
 export default {
   namespace: 'commonUser',
@@ -15,6 +15,10 @@ export default {
         type: 'saveCurrentUser',
         payload: response.data,
       });
+    },
+
+    *refreshToken(_, { call, put }) {
+      yield call(refreshToken);
     },
 
     ...effectsWithCallback(updatePassword, 'updatePassword'),

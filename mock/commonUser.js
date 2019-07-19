@@ -13,6 +13,13 @@ const proxy = {
     });
   },
 
+  'GET /api/system-app/common/user/refreshToken': (req, res) => {
+    res.json({
+      code: BusinessCode.SUCCESS,
+      msg: 'success'
+    });
+  }
+
   'POST /api/system-app/common/user/updatePassword': (req, res) => {
     res.json({
       code: BusinessCode.SUCCESS,
