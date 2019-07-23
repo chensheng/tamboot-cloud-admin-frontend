@@ -18,7 +18,7 @@ const proxy = {
       code: BusinessCode.SUCCESS,
       msg: 'success'
     });
-  }
+  },
 
   'POST /api/system-app/common/user/updatePassword': (req, res) => {
     res.json({
