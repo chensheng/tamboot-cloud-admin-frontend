@@ -5,7 +5,7 @@ export async function details() {
 }
 
 export async function refreshToken() {
-  return request('/system-app/common/user/refreshToken');
+  return request('/system-app/common/user/refreshToken', {ignoreDefaultFailHandler: true});
 }
 
 export async function updatePassword(body) {
