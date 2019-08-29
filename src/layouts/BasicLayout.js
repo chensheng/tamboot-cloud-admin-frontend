@@ -63,9 +63,6 @@ class BasicLayout extends React.Component {
       type: 'commonMenu/getMenuData',
       payload: { routes, authority },
     });
-    dispatch({
-      type: 'commonUser/refreshToken',
-    });
   }
 
   getContext() {

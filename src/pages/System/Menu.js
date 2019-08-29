@@ -57,11 +57,7 @@ class Menu extends PureComponent {
   };
 
   handleUpdate = () => {
-    const {
-      dispatch,
-      form,
-      systemMenu: { selectedMenu: oldSelectedMenu },
-    } = this.props;
+    const { dispatch, form, systemMenu: { selectedMenu: oldSelectedMenu }, } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -77,10 +73,7 @@ class Menu extends PureComponent {
   };
 
   handleCreate = (fieldsValue, resolve) => {
-    const {
-      dispatch,
-      systemMenu: { selectedMenu },
-    } = this.props;
+    const { dispatch, systemMenu: { selectedMenu }, } = this.props;
     fieldsValue.parentName = undefined;
     fieldsValue.parent = selectedMenu.id;
     dispatch({
@@ -93,10 +86,7 @@ class Menu extends PureComponent {
   };
 
   handleDelete = () => {
-    const {
-      dispatch,
-      systemMenu: { selectedMenu },
-    } = this.props;
+    const { dispatch, systemMenu: { selectedMenu }, } = this.props;
     if (!selectedMenu || !selectedMenu.id) {
       message.warning('请选择要删除的菜单');
       return;
@@ -131,23 +121,9 @@ class Menu extends PureComponent {
   renderCreateModal = () => {
     const formItems = [
       { label: '父菜单', name: 'parentName', component: <Input disabled={true} /> },
-      {
-        label: '名称',
-        name: 'name',
-        component: <Input />,
-        rules: [{ required: true, message: '请输入名称' }],
-      },
-      {
-        label: '地址',
-        name: 'path',
-        component: <Input />,
-        rules: [{ required: true, message: '请输入地址' }],
-      },
-      {
-        label: '排序',
-        name: 'orderIndex',
-        component: <InputNumber min={0} step={1} style={{ width: '100%' }} />,
-      },
+      { label: '名称', name: 'name', component: <Input />, rules: [{ required: true, message: '请输入名称' }], },
+      { label: '地址', name: 'path', component: <Input />, rules: [{ required: true, message: '请输入地址' }], },
+      { label: '排序', name: 'orderIndex', component: <InputNumber min={0} step={1} style={{ width: '100%' }} />, },
       { label: '图标', name: 'icon', component: <Input /> },
     ];
 
@@ -168,20 +144,11 @@ class Menu extends PureComponent {
   };
 
   renderMenuInfoView = () => {
-    const {
-      systemMenu: { selectedMenu },
-      updateLoading,
-      form,
-    } = this.props;
+    const { systemMenu: { selectedMenu }, updateLoading, form } = this.props;
 
     const operatorComponent = (
       <div>
-        <a
-          href="javascript:;"
-          onClick={() => {
-            this.showCreateModal(true, { parentName: selectedMenu.name });
-          }}
-        >
+        <a href="javascript:;" onClick={() => {this.showCreateModal(true, { parentName: selectedMenu.name });}}>
           添加子菜单
         </a>
         <span style={{ color: '#dddddd' }}>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
@@ -193,12 +160,7 @@ class Menu extends PureComponent {
 
     return (
       <Card
-        title={
-          <div>
-            <Icon type="profile" />
-            &nbsp;菜单信息
-          </div>
-        }
+        title={<div><Icon type="profile" />&nbsp;当前菜单</div>}
         bordered={false}
         extra={operatorComponent}
       >
@@ -241,19 +203,11 @@ class Menu extends PureComponent {
   };
 
   renderMenuTree = () => {
-    const {
-      systemMenu: { menuTree, selectedMenu },
-      treeLoading,
-    } = this.props;
+    const { systemMenu: { menuTree, selectedMenu }, treeLoading, } = this.props;
 
     return (
       <Card
-        title={
-          <div>
-            <Icon type="cluster" />
-            &nbsp;菜单树
-          </div>
-        }
+        title={<div><Icon type="cluster" />&nbsp;菜单树</div>}
         bordered={false}
       >
         <Tree

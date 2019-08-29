@@ -63,9 +63,7 @@ class RoleMenuModal extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'systemRole/saveRoleMenus',
-      payload: {
-        roleMenus: checkedKeys,
-      },
+      payload: checkedKeys
     });
   };
 

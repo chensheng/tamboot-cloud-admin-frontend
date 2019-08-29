@@ -1,17 +1,17 @@
-export function stateOfPage() {
+export function stateOfPage(stateName = 'pageData') {
   return {
-    pageData: {
+    [stateName]: {
       list: [],
       pagination: {},
     },
   };
 }
 
-export function effectsOfPage(pageService, funcName = 'page') {
+export function effectsOfPage(pageService, funcName = 'page', pageNumReducerName='savePageNum', pageDataReducerName='savePageData') {
   return {
     *[funcName]({ payload }, { call, put }) {
       yield put({
-        type: 'setCurrentPageNum',
+        type: pageNumReducerName,
         payload: {
           pageNum: payload.pageNum,
         },
@@ -23,15 +23,13 @@ export function effectsOfPage(pageService, funcName = 'page') {
       }
 
       yield put({
-        type: 'refreshPage',
+        type: pageDataReducerName,
         payload: {
-          pageData: {
-            list: response.data.result,
-            pagination: {
-              current: response.data.pageNum,
-              total: response.data.total,
-              pageSize: response.data.pageSize,
-            },
+          list: response.data.result,
+          pagination: {
+            current: response.data.pageNum,
+            total: response.data.total,
+            pageSize: response.data.pageSize,
           },
         },
       });
@@ -39,25 +37,58 @@ export function effectsOfPage(pageService, funcName = 'page') {
   };
 }
 
-export function reducersOfPage() {
+export function reducersOfPage(pageNumReducerName='savePageNum', pageDataReducerName='savePageData', stateName='pageData') {
   return {
-    refreshPage(state, action) {
+    [pageDataReducerName](state, action) {
       return {
         ...state,
-        pageData: action.payload.pageData,
+        [stateName]: action.payload,
       };
     },
 
-    setCurrentPageNum(state, action) {
+    [pageNumReducerName](state, action) {
       return {
         ...state,
-        pageData: {
-          ...state.pageData,
+        [stateName]: {
+          ...state[stateName],
           pagination: {
-            ...state.pageData.pagination,
+            ...state[stateName].pagination,
             current: action.payload.pageNum,
           },
         },
+      };
+    },
+  };
+}
+
+export function stateOfList(stateName = 'listData') {
+  return {
+    [stateName]: [],
+  };
+}
+
+export function effectsOfList(listService, funcName = 'list', reducerName = 'saveList') {
+  return {
+    *[funcName]({ payload }, { call, put }) {
+      const response = yield call(listService, payload);
+      if (!response) {
+        return;
+      }
+
+      yield put({
+        type: reducerName,
+        payload: response.data
+      });
+    },
+  };
+}
+
+export function reducersOfList(reducerName = 'saveList', stateName='listData') {
+  return {
+    [reducerName](state, action) {
+      return {
+        ...state,
+        [stateName]: action.payload,
       };
     },
   };

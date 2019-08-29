@@ -7,6 +7,7 @@ import Ellipsis from '@/components/Ellipsis';
 import RoleMenuModal from '@/components/RoleMenuModal';
 import CreateModal from '@/components/CreateModal';
 import UpdateModal from '@/components/UpdateModal';
+import TableRowActions from '@/components/TableRowActions';
 import { showConfirmDialog } from '@/components/ConfirmDialog';
 
 /* eslint react/no-multi-comp:0 */
@@ -59,21 +60,13 @@ class Role extends PureComponent {
 
   renderCreateModal = () => {
     const formItems = [
-      {
-        label: '编码',
-        name: 'roleCode',
-        component: <Input placeholder="由大写字母、下划线组成" />,
+      { label: '编码', name: 'roleCode', component: <Input placeholder="由大写字母、下划线组成" />,
         rules: [
           { required: true, message: '请输入编码' },
           { pattern: new RegExp(/^[A-Z_]+$/), message: '角色编码由大写字母、下划线组成' },
         ],
       },
-      {
-        label: '名称',
-        name: 'roleName',
-        component: <Input placeholder="必填" />,
-        rules: [{ required: true, message: '请输入名称' }],
-      },
+      { label: '名称', name: 'roleName', component: <Input placeholder="必填" />, rules: [{ required: true, message: '请输入名称' }] },
       { label: '描述', name: 'roleDesc', component: <Input placeholder="对角色职责的描述" /> },
     ];
 
@@ -84,9 +77,7 @@ class Role extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showCreateModal = showModal;
-      },
+      bindShowModal: showModal => { this.showCreateModal = showModal;},
       onConfirm: this.handleCreate,
     };
 
@@ -96,12 +87,7 @@ class Role extends PureComponent {
   renderUpdateModal = () => {
     const formItems = [
       { label: '编码', name: 'roleCode', component: <Input disabled={true} /> },
-      {
-        label: '名称',
-        name: 'roleName',
-        component: <Input placeholder="必填" />,
-        rules: [{ required: true, message: '请输入名称' }],
-      },
+      { label: '名称', name: 'roleName', component: <Input placeholder="必填" />, rules: [{ required: true, message: '请输入名称' }],},
       { label: '描述', name: 'roleDesc', component: <Input placeholder="对角色职责的描述" /> },
     ];
 
@@ -112,9 +98,7 @@ class Role extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showUpdateModal = showModal;
-      },
+      bindShowModal: showModal => {this.showUpdateModal = showModal;},
       onConfirm: this.handleUpdate,
     };
 
@@ -123,59 +107,24 @@ class Role extends PureComponent {
 
   renderRoleMenuModal = () => {
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showRoleMenuModal = showModal;
-      },
+      bindShowModal: showModal => {this.showRoleMenuModal = showModal;},
     };
 
     return <RoleMenuModal {...modalMethods} />;
   };
 
   renderPageView = () => {
+    const actions = [
+      { name: '分配菜单', onClick: (text, record, index) => {this.showRoleMenuModal(true, record)}},
+      { name: '修改', onClick: (text, record, index) => {this.showUpdateModal(true, record);}},
+      { name: '删除', onClick: (text, record, index) => {this.handleDelete(record);}}
+    ];
+
     const columns = [
       { title: '编码', dataIndex: 'roleCode' },
       { title: '名称', dataIndex: 'roleName' },
-      {
-        title: '描述',
-        dataIndex: 'roleDesc',
-        render(val) {
-          return (
-            <Ellipsis length={10} lines={1} tooltip={true}>
-              {val}
-            </Ellipsis>
-          );
-        },
-      },
-      {
-        title: '操作',
-        render: (text, record) => (
-          <Fragment>
-            <a
-              onClick={() => {
-                this.showRoleMenuModal(true, record);
-              }}
-            >
-              分配菜单
-            </a>
-            <Divider type="vertical" />
-            <a
-              onClick={() => {
-                this.showUpdateModal(true, record);
-              }}
-            >
-              修改
-            </a>
-            <Divider type="vertical" />
-            <a
-              onClick={() => {
-                this.handleDelete(record);
-              }}
-            >
-              删除
-            </a>
-          </Fragment>
-        ),
-      },
+      { title: '描述', dataIndex: 'roleDesc', render: text => (<Ellipsis length={10} lines={1} tooltip={true}>{text}</Ellipsis>)},
+      { title: '操作', render: (text, record, index) => (<TableRowActions actions={actions} text={text} record={record} index={index}/>)},
     ];
 
     const searchFormItems = [
@@ -184,26 +133,18 @@ class Role extends PureComponent {
     ];
 
     const operatorComponents = [
-      <Button key="create" icon="plus" type="primary" onClick={() => this.showCreateModal(true)}>
-        新建
-      </Button>,
+      <Button key="create" icon="plus" type="primary" onClick={() => this.showCreateModal(true)}>新建</Button>,
     ];
 
-    const {
-      dispatch,
-      systemRole: { pageData },
-      pageViewLoading,
-    } = this.props;
+    const { dispatch, systemRole: { pageData }, pageViewLoading, } = this.props;
 
     return (
       <PageView
-        bindSearch={search => {
-          this.refreshPageView = search;
-        }}
+        bindRefresh={func => {this.refreshPageView = func;}}
         dispatch={dispatch}
         loading={pageViewLoading}
-        pageData={pageData}
-        pageEffectType="systemRole/page"
+        data={pageData}
+        effectType="systemRole/page"
         columns={columns}
         searchFormItems={searchFormItems}
         operatorComponents={operatorComponents}

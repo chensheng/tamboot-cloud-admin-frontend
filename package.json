@@ -110,15 +110,10 @@
     "umi-plugin-react": "^1.4.2"
   },
   "optionalDependencies": {
-    "puppeteer": "^1.18.1"
+    "puppeteer": "^1.19.0"
   },
   "lint-staged": {
-    "**/*.{js,ts,tsx,json,jsx,less}": [
-      "node ./scripts/lint-prettier.js",
-      "git add"
-    ],
-    "**/*.{js,jsx}": "npm run lint-staged:js",
-    "**/*.less": "stylelint --syntax less"
+ 
   },
   "engines": {
     "node": ">=8.0.0"

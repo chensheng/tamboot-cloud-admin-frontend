@@ -5,10 +5,11 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import PageView from '@/components/PageView';
 import CreateModal from '@/components/CreateModal';
 import UpdateModal from '@/components/UpdateModal';
+import TableRowActions from '@/components/TableRowActions';
 import { showConfirmDialog } from '@/components/ConfirmDialog';
 import { StatusDict } from '@/utils/dataDicts';
 import { Status } from '@/utils/constants';
-import { createByDataDict } from '@/utils/selectUtils';
+import { createByDataDict, createByList } from '@/utils/selectUtils';
 
 const Option = Select.Option;
 
@@ -118,28 +119,17 @@ class User extends PureComponent {
 
   renderCreateModal = () => {
     const formItems = [
-      {
-        label: '用户名',
-        name: 'username',
-        component: <Input />,
-        rules: [{ required: true, message: '请输入用户名' }],
-      },
-      {
-        label: '密码',
-        name: 'password',
-        component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
+      { label: '用户名', name: 'username', component: <Input />, rules: [{ required: true, message: '请输入用户名' }], },
+      { label: '密码', name: 'password', component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
         rules: [
           { required: true, message: '请输入密码' },
-          {
+          { 
             pattern: /^(?![A-Za-z0-9]+$)(?![a-z0-9\W]+$)(?![A-Za-z\W]+$)(?![A-Z0-9\W]+$)[a-zA-Z0-9\W]{8,}$/,
             message: '至少8位数字、字母、特殊字符_#@!组成',
           },
         ],
       },
-      {
-        label: '确认密码',
-        name: 'confirmPassword',
-        component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
+      { label: '确认密码', name: 'confirmPassword', component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
         rules: [
           { required: true, message: '请输入确认密码' },
           {
@@ -157,9 +147,7 @@ class User extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showCreateModal = showModal;
-      },
+      bindShowModal: showModal => { this.showCreateModal = showModal; },
       onConfirm: this.handleCreate,
     };
 
@@ -169,10 +157,7 @@ class User extends PureComponent {
   renderResetPasswordModal = () => {
     const formItems = [
       { label: '用户名', name: 'username', component: <Input disabled={true} /> },
-      {
-        label: '密码',
-        name: 'password',
-        component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
+      { label: '密码', name: 'password', component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
         rules: [
           { required: true, message: '请输入密码' },
           {
@@ -181,10 +166,7 @@ class User extends PureComponent {
           },
         ],
       },
-      {
-        label: '确认密码',
-        name: 'confirmPassword',
-        component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
+      { label: '确认密码', name: 'confirmPassword', component: <Input type="password" placeholder="至少8位数字、字母、特殊字符_#@!组成" />,
         rules: [
           { required: true, message: '请输入确认密码' },
           {
@@ -202,9 +184,7 @@ class User extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showResetPasswordModal = showModal;
-      },
+      bindShowModal: showModal => { this.showResetPasswordModal = showModal; },
       onConfirm: this.handleResetPassword,
     };
 
@@ -212,22 +192,11 @@ class User extends PureComponent {
   };
 
   renderAssignRolesModal = () => {
-    const {
-      systemRole: { roleList },
-    } = this.props;
+    const { systemRole: { roleList }, } = this.props;
 
     const formItems = [
       { label: '用户名', name: 'username', component: <Input disabled={true} /> },
-      {
-        label: '角色',
-        name: 'roleCodeList',
-        component: (
-          <Select style={{ width: '100%' }} mode="multiple">
-            {roleList.map(role => (
-              <Option key={role.roleCode}>{role.roleName}</Option>
-            ))}
-          </Select>
-        ),
+      { label: '角色', name: 'roleCodeList', component: createByList(roleList, 'roleCode', 'roleName', {mode: 'multiple'}, false),
         rules: [{ required: true, message: '请选择角色' }],
       },
     ];
@@ -239,9 +208,7 @@ class User extends PureComponent {
     };
 
     const modalMethods = {
-      bindShowModal: showModal => {
-        this.showAssignRolesModal = showModal;
-      },
+      bindShowModal: showModal => { this.showAssignRolesModal = showModal; },
       onConfirm: this.handleAssignRoles,
     };
 
@@ -249,118 +216,39 @@ class User extends PureComponent {
   };
 
   renderPageView = () => {
-    const {
-      dispatch,
-      systemUser: { pageData },
-      systemRole: { roleList },
-      pageViewLoading,
-    } = this.props;
+    const { dispatch, systemUser: { pageData }, systemRole: { roleList }, pageViewLoading, } = this.props;
+
+    const actions = [
+      { name: '分配角色', onClick: (text, record, index) => {this.showAssignRolesModal(true, record);}},
+      { name: '重置密码', onClick: (text, record, index) => {this.showResetPasswordModal(true, record);}},
+      { name: '启用', onClick: (text, record, index) => {this.handleEnable(record);}, checkVisible: (text, record, index) => record.status === Status.DISABLE},
+      { name: '停用', onClick: (text, record, index) => {this.handleDisable(record);}, checkVisible: (text, record, index) => record.status === Status.ENABLE}
+    ];
 
     const columns = [
       { title: '用户名', dataIndex: 'username' },
       { title: '角色', dataIndex: 'roleNameList', render: val => val.join(',') },
       { title: '状态', dataIndex: 'status', render: val => StatusDict[val] },
-      {
-        title: '操作',
-        render: (val, record) => {
-          if (record.status === Status.DISABLE) {
-            return (
-              <Fragment>
-                <a
-                  onClick={() => {
-                    this.showAssignRolesModal(true, record);
-                  }}
-                >
-                  分配角色
-                </a>
-                <Divider type="vertical" />
-                <a
-                  onClick={() => {
-                    this.showResetPasswordModal(true, record);
-                  }}
-                >
-                  重置密码
-                </a>
-                <Divider type="vertical" />
-                <a
-                  onClick={() => {
-                    this.handleEnable(record);
-                  }}
-                >
-                  启用
-                </a>
-              </Fragment>
-            );
-          }
-          return (
-            <Fragment>
-              <a
-                onClick={() => {
-                  this.showAssignRolesModal(true, record);
-                }}
-              >
-                分配角色
-              </a>
-              <Divider type="vertical" />
-              <a
-                onClick={() => {
-                  this.showResetPasswordModal(true, record);
-                }}
-              >
-                重置密码
-              </a>
-              <Divider type="vertical" />
-              <a
-                onClick={() => {
-                  this.handleDisable(record);
-                }}
-              >
-                停用
-              </a>
-            </Fragment>
-          );
-        },
-      },
+      { title: '操作', render: (text, record, index) => (<TableRowActions actions={actions} text={text} record={record} index={index}/>)},
     ];
 
     const searchFormItems = [
       { label: '用户名', name: 'usernameLike', component: <Input placeholder="支持模糊查询" /> },
-      {
-        label: '角色',
-        name: 'roleCode',
-        component: (
-          <Select>
-            {roleList.map(role => (
-              <Option key={role.roleCode}>{role.roleName}</Option>
-            ))}
-          </Select>
-        ),
-      },
+      { label: '角色', name: 'roleCode', component: createByList(roleList, 'roleCode', 'roleName'), },
       { label: '状态', name: 'status', component: createByDataDict(StatusDict) },
     ];
 
     const operatorComponents = [
-      <Button
-        key="create"
-        icon="plus"
-        type="primary"
-        onClick={() => {
-          this.showCreateModal(true);
-        }}
-      >
-        新建
-      </Button>,
+      <Button key="create" icon="plus" type="primary" onClick={() => {this.showCreateModal(true);}}>新建</Button>,
     ];
 
     return (
       <PageView
-        bindSearch={search => {
-          this.refreshPageView = search;
-        }}
+        bindRefresh={func => {this.refreshPageView = func;}}
         dispatch={dispatch}
         loading={pageViewLoading}
-        pageData={pageData}
-        pageEffectType="systemUser/page"
+        data={pageData}
+        effectType="systemUser/page"
         columns={columns}
         searchFormItems={searchFormItems}
         operatorComponents={operatorComponents}

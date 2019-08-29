@@ -65,39 +65,30 @@ class StandardTable extends PureComponent {
     const { selectedRowKeys, needTotalList } = this.state;
     const { selectable, data={} } = this.props;
 
-    if (selectable) {
-      return (
-        <div className={styles.tableAlert}>
-          <Alert
-            message={
-              <Fragment>
-                共查到&nbsp;
-                <span style={{ fontWeight: 600 }}>{data.pagination&&data.pagination.total?data.pagination.total:0}</span>
-                &nbsp;条记录，
-                已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 条。&nbsp;&nbsp;
-                {needTotalList.map(item => (
-                  <span style={{ marginLeft: 8 }} key={item.dataIndex}>
-                    {item.title}
-                    总计&nbsp;
-                    <span style={{ fontWeight: 600 }}>
-                      {item.render ? item.render(item.total) : item.total}
-                    </span>
-                  </span>
-                ))}
-                <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
-                  清空
-                </a>
-              </Fragment>
-            }
-            type="info"
-            showIcon
-          />
-        </div>
-      )
+    if (!selectable) {
+      return <div className={styles.tableAlert}></div>;
     }
-
+    
     return (
       <div className={styles.tableAlert}>
+        <Alert
+          message={
+            <Fragment>
+              共查到&nbsp;
+              <span style={{ fontWeight: 600 }}>{data.pagination&&data.pagination.total?data.pagination.total:0}</span>
+              &nbsp;条记录，已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 条。&nbsp;&nbsp;
+              {needTotalList.map(item => (
+                <span style={{ marginLeft: 8 }} key={item.dataIndex}>
+                  {item.title}总计&nbsp;
+                  <span style={{ fontWeight: 600 }}>{item.render ? item.render(item.total) : item.total}</span>
+                </span>
+              ))}
+              <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>清空</a>
+            </Fragment>
+          }
+          type="info"
+          showIcon
+        />
       </div>
     )
   }

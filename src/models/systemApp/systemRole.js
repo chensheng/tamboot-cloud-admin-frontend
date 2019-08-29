@@ -2,6 +2,9 @@ import {
   stateOfPage,
   effectsOfPage,
   reducersOfPage,
+  stateOfList,
+  effectsOfList,
+  reducersOfList,
   effectsWithCallback,
 } from '@/utils/ModelTemplate';
 import { page, assignMenus, create, update, del, list } from '@/services/systemApp/systemRole';
@@ -12,8 +15,10 @@ export default {
 
   state: {
     ...stateOfPage(),
-    roleMenus: [],
-    roleList: [],
+    
+    ...stateOfList('roleList'),
+  
+    ...stateOfList('roleMenus'),
   },
 
   effects: {
@@ -27,42 +32,18 @@ export default {
 
     ...effectsWithCallback(del, 'del'),
 
-    *roleMenus({ payload }, { call, put }) {
-      const response = yield call(roleMenus, payload);
-      yield put({
-        type: 'saveRoleMenus',
-        payload: {
-          roleMenus: response ? response.data : [],
-        },
-      });
-    },
+    ...effectsOfList(list, 'list', 'saveRoleList'),
 
-    *list({ _ }, { call, put }) {
-      const response = yield call(list);
-      yield put({
-        type: 'saveRoleList',
-        payload: {
-          roleList: response && response.data ? response.data : [],
-        },
-      });
-    },
+    ...effectsOfList(roleMenus, 'roleMenus', 'saveRolMeus'),
+
   },
 
   reducers: {
     ...reducersOfPage(),
 
-    saveRoleMenus(state, action) {
-      return {
-        ...state,
-        roleMenus: action.payload.roleMenus,
-      };
-    },
+    ...reducersOfList('saveRoleList', 'roleList'),
 
-    saveRoleList(state, action) {
-      return {
-        ...state,
-        roleList: action.payload.roleList,
-      };
-    },
+    ...reducersOfList('saveRoleMenus', 'roleMenus'),
+    
   },
 };

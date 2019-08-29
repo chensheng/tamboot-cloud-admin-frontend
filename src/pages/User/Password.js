@@ -94,9 +94,13 @@ class Password extends PureComponent {
     return (
       <PageHeaderWrapper>
         <FormView
+          style={{paddingLeft: '30%', paddingRight: '30%'}}
+          formItemSpan={24}
           formItems={formItems}
           submitLoading={submitLoading}
           onSubmit={this.handleSubmit}
+          submitStyle={{width:'100%'}}
+          submitMarginTop={5}
         />
       </PageHeaderWrapper>
     );
